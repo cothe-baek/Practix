@@ -2,6 +2,45 @@
 
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42628) 
 
+---
+### 풀이 피드백
+
+이 문제는 최댓값과 최솟값을 동시에 $O(\log N)$으로 다루기 위해 **최소 힙과 최대 힙 두 개**를 사용하고, 양쪽 힙의 상태를 동기화 해야함
+
+이를 위해 데이터의 '값'이 아닌 '**고유 식별자(Index)**'와 visited를 활용한 **'지연 삭제(Lazy Deletion)'** 기법이 필요함
+
+#### 1. 초기 접근 방식 (복잡한 조건문)
+습관이 잘못 들어서, `while True` 안에서 조건문을 중첩하여 유효성을 검사했는데, 답은 맞지만 가독성이 바닥
+```python
+# [기존 로직]
+if val == 1:
+    while True:
+        if v and maxq:
+            if maxq[0][1] in v:
+                num, i = heapq.heappop(maxq)
+                v.remove(i)
+                break
+            else:
+                heapq.heappop(maxq)
+        else:
+            break
+```
+### 2. 코드 개선 (마치 조건 안맞을 때 continue 하는 느낌, indent도 줄어듦)
+유효하지 않은 유령 노드를 먼저 모두 걷어낸 후, 진짜 값을 지우는 흐름의 코드
+```python
+# [개선된 로직]
+if val == 1:
+    # [1] 힙 맨 앞 있는 이미 삭제된 값(유령 노드)들을 모두 없앰
+    while maxq and maxq[0][1] not in v:
+        heapq.heappop(maxq)
+        
+    # [2] 남은 유효값에서 pop 후 인덱스 제거 처림
+    if maxq:
+        num, i = heapq.heappop(maxq)
+        v.remove(i)
+```
+---
+
 ### 성능 요약
 
 메모리: 21.9 MB, 시간: 47.74 ms
@@ -100,6 +139,5 @@
 <hr>
 
 <p>※ 공지 - 2024년 7월 22일 테스트케이스가 추가되었습니다. 기존에 제출한 코드가 통과하지 못할 수도 있습니다.</p>
-
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
