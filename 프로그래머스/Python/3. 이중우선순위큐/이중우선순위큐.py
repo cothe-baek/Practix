@@ -23,7 +23,7 @@ def solution(operations):
                     hf.heappop(minq)
                 # 유효한 값에서 min값 삭제 수행
                 if minq:
-                    val, i = hf.heappop(minq)
+                    num, i = hf.heappop(minq)
                     v.remove(i)
                         
             
@@ -32,17 +32,16 @@ def solution(operations):
                     hf.heappop(maxq)
                 
                 if maxq:
-                    val, i = hf.heappop(maxq)
+                    num, i = hf.heappop(maxq)
                     v.remove(i)
                     
-#         # [디버깅 출력 꿀팁]
 #         print(f"명령어: {op}")
         
-#         # 1. 큐의 현재 상태 (값만 뽑고, maxq는 부호 반전)
+#         # [1] 큐의 현재 상태 (maxq는 부호 반전)
 #         print(f"minq 상태: {[(val, idx) for val, idx in minq]}")
 #         print(f"maxq 상태: {[(-val, idx) for val, idx in maxq]}")
         
-#         # 2. 살아있는 인덱스(v)를 기준으로 '진짜 유효한 값'만 보기
+#         # [2] 유효 인덱스(v)를 기준으로 진짜 유효한 값만 보기
 #         valid_nums = [val for val, i in minq if i in v]
 #         print(f"실제 남은 값: {valid_nums}\n")
         
