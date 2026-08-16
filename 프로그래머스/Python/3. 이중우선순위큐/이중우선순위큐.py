@@ -18,35 +18,33 @@ def solution(operations):
 
         elif cmd == 'D':
             if val == -1:
-                while True:
-                    if v and minq:
-                        if minq[0][1] in v:
-                            num, i = hf.heappop(minq)
-                            v.remove(i)
-                            break
-                        else:
-                            hf.heappop(minq)
-                    else:
-                        break
+                # 먼저 v에 없는 값(삭제된 값)들을 빼내기
+                while minq and minq[0][1] not in v:
+                    hf.heappop(minq)
+                # 유효한 값에서 min값 삭제 수행
+                if minq:
+                    val, i = hf.heappop(minq)
+                    v.remove(i)
                         
             
-            if val == 1:
-                while True:
-                    if v and maxq:
-                        if maxq[0][1] in v:
-                            num, i = hf.heappop(maxq)
-                            v.remove(i)
-                            break
-                        else:
-                            hf.heappop(maxq)
-                    else:
-                        break
+            elif val == 1:
+                while maxq and maxq[0][1] not in v:
+                    hf.heappop(maxq)
+                
+                if maxq:
+                    val, i = hf.heappop(maxq)
+                    v.remove(i)
                     
-        # print(op)
-        # print(minq)
-        # print(maxq)
-        # print(v)
-        # print()
+#         # [디버깅 출력 꿀팁]
+#         print(f"명령어: {op}")
+        
+#         # 1. 큐의 현재 상태 (값만 뽑고, maxq는 부호 반전)
+#         print(f"minq 상태: {[(val, idx) for val, idx in minq]}")
+#         print(f"maxq 상태: {[(-val, idx) for val, idx in maxq]}")
+        
+#         # 2. 살아있는 인덱스(v)를 기준으로 '진짜 유효한 값'만 보기
+#         valid_nums = [val for val, i in minq if i in v]
+#         print(f"실제 남은 값: {valid_nums}\n")
         
     min_num = 0
     max_num = 0
