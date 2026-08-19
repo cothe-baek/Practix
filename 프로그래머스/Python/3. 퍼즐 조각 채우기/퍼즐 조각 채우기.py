@@ -1,5 +1,8 @@
 from collections import deque
+from collections import defaultdict
+
 dirs = ((-1, 0), (1, 0), (0, -1), (0, 1))
+
 def myp(arr):
     for row in arr:
         for val in row:
@@ -12,6 +15,7 @@ def get_segments(arr, val):
     q = deque()
     v = [[0]*M for _ in range(N)]
     segments = []
+    
     for i in range(N):
         for j in range(M):
             if v[i][j] or arr[i][j] != val:
@@ -39,75 +43,59 @@ def get_segments(arr, val):
 
 def organize_segment(segment):
     new_seg = []
-    mxi, mxj = -51, -51
-    mni, mnj = 51, 51
     
-    for (i, j) in segment:
-        mxi, mxj = max(mxi, i), max(mxj, j)
-        mni, mnj = min(mni, i), min(mnj, j)        
-    
-    # print(mxi, mxj, mni, mnj)
-    mxi -= mni
-    mxj -= mnj
-    # print(mxi, mxj)
-    
-    for s in range(len(segment)):
-        i, j = segment[s]
-        segment[s] = (i-mni, j-mnj)
-    
-    new_seg.append(sorted(segment[:]))
-    
-    mx = max(mxi, mxj)
-    
-    for _ in range(3):
-        nseg = []
+    for _ in range(4):
         mni, mnj = 51, 51
         for (i, j) in segment:
-            ni, nj = j, mx-i
-            nseg.append((ni, nj))
-            mni = min(mni, ni)
-            mnj = min(mnj, nj)
+            mni = min(mni, -i)
+            mnj = min(mnj, j)
         
-        for s in range(len(nseg)):
-            i, j = nseg[s]
-            nseg[s] = (i-mni, j-mnj)
+        segment = [(j-mnj, -i-mni) for i, j in segment]
+        new_seg.append(tuple(sorted(segment)))
         
-        segment = sorted(nseg[:])
-        new_seg.append(segment)
-    
     return new_seg
 
+def organize_space(space):
+    new_seg = []
+    
+    mni, mnj = 51, 51
+    for (i, j) in space:
+        mni = min(mni, i)
+        mnj = min(mnj, j)
+
+    space = [(i-mni, j-mnj) for i, j in space]
+    
+    return tuple(sorted(space))
+
 def solution(game_board, table):
+    answer = -1
     N, M = len(table), len(table[0])
     
     segments = get_segments(table, 1)
-    
-    # puzzles: i번째 조각의 j개 회전 버전
     puzzles = []
     for segment in segments:
         new_seg = organize_segment(segment)
         puzzles.append(new_seg)
     
-    vacancies = get_segments(game_board, 0)
-    spaces = []
-    for space in vacancies:
-        mni = min([x for (x, y) in space])
-        mnj = min([y for (x, y) in space])
-        space = [(i-mni, j-mnj) for (i, j) in space]
-        space.sort()
-        spaces.append(space)
-        
-    # i번째 퍼즐로 빈칸 채우기
-    v = [0] * len(puzzles)
-    answer = 0
-    for space in spaces:
-        for idx, puzzle in enumerate(puzzles):
-            if v[idx] or len(puzzle[0]) != len(space):
+    empty = get_segments(game_board, 0)
+    
+    spaces = defaultdict(int)
+    
+    for idx, space in enumerate(empty):
+        space = organize_space(space)
+        spaces[tuple(space)] += 1
+    
+    cnt = 0
+    for puzzle in puzzles:
+        done = False
+        for seg in puzzle:
+            if done:
                 continue
             
-            if space in puzzle:
-                v[idx] = 1
-                answer += len(space)
+            if seg in spaces and spaces[seg]:
+                spaces[seg] -= 1
+                cnt += len(seg)
                 break
         
-    return answer
+        
+    return cnt
