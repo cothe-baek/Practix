@@ -18,21 +18,17 @@ def solution(orders, course):
     """
     
     def dfs(tmp, n):
-        nonlocal mx_course
         if len(tmp) > mx_course:
             return
             
         if len(tmp) in course_set:
-            if tmp not in v:
-                v.add(tmp)
-                candis[tmp] += 1
+            candis[tmp] += 1
             
         for i in range(n, len(order)):
             dfs(tmp + order[i], i+1)
     
     for order in orders:
         order = sorted(list(order))
-        v = set()
         dfs("", 0)
     
     mx_cnt = [0] * (mx_course+1)
