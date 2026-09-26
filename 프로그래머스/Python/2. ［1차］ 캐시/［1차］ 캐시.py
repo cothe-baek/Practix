@@ -1,7 +1,7 @@
 def solution(cacheSize, cities):
-    import heapq
+    from collections import deque
     cache = {}
-    hq = []
+    q = deque()
     answer = 0
     
     for i, city in enumerate(cities):
@@ -11,14 +11,14 @@ def solution(cacheSize, cities):
         else:
             answer += 5
         
-        heapq.heappush(hq, (i, city))
+        q.append((i, city))
         cache[city] = i
         
         if len(cache) > cacheSize:
             while True:
-                pop_i, pop_city = heapq.heappop(hq)
+                pop_i, pop_city = q.popleft()
                 # 유요한 걸 pop하고 처리하기
-                if pop_city not in cache or cache[pop_city] == pop_i:
+                if pop_city in cache and cache[pop_city] == pop_i:
                     del cache[pop_city]
                     break
         
