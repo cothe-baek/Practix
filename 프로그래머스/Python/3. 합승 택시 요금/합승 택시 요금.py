@@ -17,13 +17,14 @@ def solution(n, s, a, b, fares):
 
                 if cur_dist > fist[cur_node]:
                     continue
-                fist[cur_node] = cur_dist
 
                 for nxt_node, d in edges[cur_node]:
 
                     nxt_dist = cur_dist + d
-                    if nxt_dist <= dist[nxt_node]:
+                    if nxt_dist < fist[nxt_node]:
                         heappush(hq, (nxt_dist, nxt_node))
+                        fist[nxt_node] = nxt_dist
+                        
             
             return fist
     """
@@ -52,30 +53,22 @@ def solution(n, s, a, b, fares):
         cd, cn = heappop(hq)
         if cd > dist[cn]:   # 여기 >= 아닌 게 맞나?
             continue
-        dist[cn] = cd
         
         for nn, d in edges[cn]:
             if not d: continue
             nd = cd + d
             
-            if nd <= dist[nn]:
+            if nd < dist[nn]:
                 heappush(hq, (nd, nn))
+                dist[nn] = nd
+    
+    dist_a = dijkstra(a)
+    dist_b = dijkstra(b)
     
     for init_node in range(1, n+1):
-        if DBG: print(f'init node: {init_node}, init dist: {dist[init_node]}')
-        # if init_node == s: continue # 이거 있으면 안됨. 시작점에서 바로 갈라지는 것도 포함이라
+        cost_A = dist_a[init_node]
+        cost_B = dist_b[init_node]
         
-        init_dist = dist[init_node]
-        fist = dijkstra(init_node)
-        cost_A = fist[a]
-        cost_B = fist[b]
-        
-        if DBG:
-            print(cost_A, dist_A)
-            print(cost_B, dist_B)
-            print()
-        
-        answer = min(answer, init_dist + cost_A + cost_B)
+        answer = min(answer, dist[init_node] + cost_A + cost_B)
     
-        
     return answer
