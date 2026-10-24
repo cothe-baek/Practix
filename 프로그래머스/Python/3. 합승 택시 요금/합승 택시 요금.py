@@ -61,8 +61,6 @@ def solution(n, s, a, b, fares):
             if nd <= dist[nn]:
                 heappush(hq, (nd, nn))
     
-    if DBG: print(n, dist)
-    
     for init_node in range(1, n+1):
         if DBG: print(f'init node: {init_node}, init dist: {dist[init_node]}')
         # if init_node == s: continue # 이거 있으면 안됨. 시작점에서 바로 갈라지는 것도 포함이라
