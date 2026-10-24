@@ -43,25 +43,7 @@ def solution(n, s, a, b, fares):
         edges[c].append((d, f))
         edges[d].append((c, f))
     
-    dist = [INF] * (n+1)
-    dist[s] = 0
-    
-    # 기본 dijkstra
-    hq = [(0, s)]
-    
-    while hq:
-        cd, cn = heappop(hq)
-        if cd > dist[cn]:   # 여기 >= 아닌 게 맞나?
-            continue
-        
-        for nn, d in edges[cn]:
-            if not d: continue
-            nd = cd + d
-            
-            if nd < dist[nn]:
-                heappush(hq, (nd, nn))
-                dist[nn] = nd
-    
+    dist = dijkstra(s)
     dist_a = dijkstra(a)
     dist_b = dijkstra(b)
     
