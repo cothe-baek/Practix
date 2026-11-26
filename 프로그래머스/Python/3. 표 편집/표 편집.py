@@ -67,7 +67,6 @@ def solution(n, k, cmd):
             print(prv)
             print(nxt)
             print()
-
     
     answer = ''.join('O' if alive[i] else 'X' for i in range(n))
     if DBG: print(answer)
